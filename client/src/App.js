@@ -20,33 +20,22 @@ const styles = (theme) => ({
   },
 });
 
-const customer = [
-  {
-    id: 1,
-    image: "https://placeimg.com/64/64/any1",
-    name: "김태완",
-    birthday: "930604",
-    gender: "남자",
-    job: "취준생",
-  },
-  {
-    id: 2,
-    image: "https://placeimg.com/64/64/any2",
-    name: "하승권",
-    birthday: "999999",
-    gender: "남자",
-    job: "취준생",
-  },
-  {
-    id: 3,
-    image: "https://placeimg.com/64/64/any3",
-    name: "이호준",
-    birthday: "888888",
-    gender: "남자",
-    job: "얼짱",
-  },
-];
 class App extends Component {
+  state = {
+    customers: "",
+  };
+
+  componentDidMount() {
+    this.callApi()
+      .then((res) => this.setState({ customers: res }))
+      .catch((err) => console.log(err));
+  }
+  callApi = async () => {
+    const response = await fetch("/api/customers");
+    const body = await response.json();
+    return body;
+  };
+
   render() {
     const { classes } = this.props;
     return (
@@ -60,22 +49,25 @@ class App extends Component {
               <TableCell> 생년월일 </TableCell>
               <TableCell> 성별 </TableCell>
               <TableCell> 직업 </TableCell>
+              <TableCell> 비고 </TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {customer.map((c) => {
-              return (
-                <Customer
-                  key={c.id}
-                  id={c.id}
-                  image={c.image}
-                  name={c.name}
-                  birthday={c.birthday}
-                  gender={c.gender}
-                  job={c.job}
-                />
-              );
-            })}
+            {this.state.customers
+              ? this.state.customers.map((c) => {
+                  return (
+                    <Customer
+                      key={c.id}
+                      id={c.id}
+                      image={c.image}
+                      name={c.name}
+                      birthday={c.birthday}
+                      gender={c.gender}
+                      job={c.job}
+                    />
+                  );
+                })
+              : ""}
           </TableBody>
         </Table>
         {/* <Customer
